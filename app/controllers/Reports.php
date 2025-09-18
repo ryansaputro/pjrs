@@ -1259,14 +1259,17 @@ class Reports extends MY_Controller
                         )
                     );
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // ✅ pakai Composer autoload mPDF v8
+                    require_once(APPPATH . '/vendor/autoload.php');
+
+                    $rendererName        = PHPExcel_Settings::PDF_RENDERER_MPDF;
+                    $rendererLibraryPath = APPPATH . '/vendor/mpdf/mpdf';
+
                     if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
+                        die('PDF renderer not configured properly.');
                     }
 
                     header('Content-Type: application/pdf');
@@ -1277,6 +1280,7 @@ class Reports extends MY_Controller
                     $objWriter->save('php://output');
                     exit();
                 }
+
                 if ($xls) {
                     $this->excel->getActiveSheet()->getStyle('E2:E' . $row)->getAlignment()->setWrapText(true);
                     ob_clean();
@@ -3609,8 +3613,8 @@ class Reports extends MY_Controller
         // === EXPORT ===
         if ($type === 'pdf') {
 
-            $this->load->library('Pdf');
-            $mpdf = $this->pdf->load([
+            $this->load->library('Pdf_lib');
+            $mpdf = $this->pdf_lib->load([
                 'format' => 'A4', 
                 'margin_left' => 15,
                 'margin_right' => 15,
@@ -3679,9 +3683,9 @@ class Reports extends MY_Controller
             $mpdf->Output($filename, 'D');
 
         } elseif ($type === 'excel') {
-            $this->load->library('Excel');
+            $this->load->library('Excel_lib');
             // Ambil spreadsheet
-            $spreadsheet = $this->excel->getSpreadsheet();
+            $spreadsheet = $this->excel_lib->getSpreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
             // --- Judul Laporan ---
@@ -3731,7 +3735,7 @@ class Reports extends MY_Controller
 
             // --- Download Excel ---
             $filename = 'laporan_produk_'.$start_date.'_'.$end_date.'.xlsx';
-            $this->excel->download($filename);
+            $this->excel_lib->download($filename);
         }
     }
 

@@ -9,32 +9,14 @@
  *		: http://www.opensource.org/licenses/gpl-license.php
  *  ============================================================================== 
  */
-// require_once APPPATH . "/third_party/mpdf-8.1.0/vendor/autoload.php";
+require_once APPPATH . "/third_party/mpdf-8.1.0/vendor/autoload.php";
 
-// class Pdf extends mPDF
-// {
-//     public function __construct()
-//     {
-//         parent::__construct();
-//     }
-// }
-// load autoload dari mPDF
-
-
-class Pdf {
-   protected $mpdf;
-
-    public function __construct($params = [])
+class Pdf extends mPDF
+{
+    public function __construct()
     {
-        // load composer autoload
-        require_once FCPATH . '/vendor/autoload.php';
-
-        $this->mpdf = new \Mpdf\Mpdf($params);
-    }
-
-    public function load()
-    {
-        return $this->mpdf;
+        parent::__construct();
     }
 }
+// load autoload dari mPDF
 
