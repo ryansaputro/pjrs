@@ -194,33 +194,32 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(25);
 
                 $filename = 'product_quantity_alerts';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                    $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
+
                 }
                 if ($xls) {
                     ob_clean();
@@ -228,7 +227,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -474,7 +473,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("C" . $row . ":I" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('C' . $row, $pQty);
                 $this->excel->getActiveSheet()->SetCellValue('D' . $row, $sQty);
                 $this->excel->getActiveSheet()->SetCellValue('E' . $row, $bQty);
@@ -494,32 +493,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth(25);
 
                 $filename = 'products_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -529,7 +526,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -704,7 +701,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("C" . $row . ":G" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('C' . $row, $pQty);
                 $this->excel->getActiveSheet()->SetCellValue('D' . $row, $sQty);
                 $this->excel->getActiveSheet()->SetCellValue('E' . $row, $pAmt);
@@ -720,32 +717,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(25);
 
                 $filename = 'categories_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -755,7 +750,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -898,7 +893,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("B" . $row . ":F" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('B' . $row, $pQty);
                 $this->excel->getActiveSheet()->SetCellValue('C' . $row, $sQty);
                 $this->excel->getActiveSheet()->SetCellValue('D' . $row, $pAmt);
@@ -913,32 +908,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(25);
 
                 $filename = 'brands_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -948,7 +941,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -1234,7 +1227,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("F" . $row . ":H" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('F' . $row, $total);
                 $this->excel->getActiveSheet()->SetCellValue('G' . $row, $paid);
                 $this->excel->getActiveSheet()->SetCellValue('H' . $row, $balance);
@@ -1249,38 +1242,32 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
                 $filename = 'sales_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
                     $this->excel->getActiveSheet()->getPageSetup()
-                        ->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
 
-                    // ✅ pakai Composer autoload mPDF v8
-                    require_once(APPPATH . '/vendor/autoload.php');
-
-                    $rendererName        = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibraryPath = APPPATH . '/vendor/mpdf/mpdf';
-
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('PDF renderer not configured properly.');
-                    }
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
-
                 if ($xls) {
                     $this->excel->getActiveSheet()->getStyle('E2:E' . $row)->getAlignment()->setWrapText(true);
                     ob_clean();
@@ -1288,7 +1275,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -1463,32 +1450,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
                 $filename = 'quotes_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -1498,7 +1483,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -1613,32 +1598,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
                 $filename = 'transfers_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -1648,7 +1631,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -1783,7 +1766,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("F" . $row . ":H" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('F' . $row, $total);
                 $this->excel->getActiveSheet()->SetCellValue('G' . $row, $paid);
                 $this->excel->getActiveSheet()->SetCellValue('H' . $row, $balance);
@@ -1798,32 +1781,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('H')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('I')->setWidth(20);
                 $filename = 'purchase_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -1833,7 +1814,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2010,7 +1991,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("F" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('F' . $row, $total);
 
                 $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
@@ -2021,32 +2002,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
                 $filename = 'payments_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -2055,7 +2034,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2188,32 +2167,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
                 $filename = 'customers_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -2222,7 +2199,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2343,32 +2320,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(15);
                 $filename = 'suppliers_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -2377,7 +2352,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2595,22 +2570,22 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(35);
 
                 $filename = 'staff_login_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
                     $styleArray = array(
                         'borders' => array(
                             'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                             )
                         )
                     );
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
                     require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
+                    $rendererName = \PhpOffice\PhpSpreadsheet\Settings::PDF_RENDERER_MPDF;
                     $rendererLibrary = 'MPDF';
                     $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
+                    if (!\PhpOffice\PhpSpreadsheet\Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
                         die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
                             PHP_EOL . ' as appropriate for your directory structure');
                     }
@@ -2619,7 +2594,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'PDF');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2630,7 +2605,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -2887,33 +2862,57 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('J')->setWidth(15);
                 $this->excel->getActiveSheet()->getColumnDimension('K')->setWidth(35);
                 $filename = 'register_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                    // $styleArray = array(
+                    //     'borders' => array(
+                    //         'allborders' => array(
+                    //             'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                    //         )
+                    //     )
+                    // );
+                    // $this->excel->getDefaultStyle()->applyFromArray($styleArray);
+                    // $this->excel->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+                    // require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
+                    // $rendererName = \PhpOffice\PhpSpreadsheet\Settings::PDF_RENDERER_MPDF;
+                    // $rendererLibrary = 'MPDF';
+                    // $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
+                    // if (!\PhpOffice\PhpSpreadsheet\Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
+                    //     die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
+                    //         PHP_EOL . ' as appropriate for your directory structure');
+                    // }
+
+                    // header('Content-Type: application/pdf');
+                    // header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
+                    // header('Cache-Control: max-age=0');
+
+                    // $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'PDF');
+                    // $objWriter->save('php://output');
+                    // exit();
+                                       $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
+
                 }
                 if ($xls) {
                     //$this->excel->getActiveSheet()->getStyle('C2:C' . $row)->getAlignment()->setWrapText(true);
@@ -2922,7 +2921,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -3041,7 +3040,7 @@ class Reports extends MY_Controller
                     $row++;
                 }
                 $this->excel->getActiveSheet()->getStyle("D" . $row)->getBorders()
-                    ->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM);
+                    ->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM);
                 $this->excel->getActiveSheet()->SetCellValue('D' . $row, $total);
 
                 $this->excel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
@@ -3052,22 +3051,22 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(25);
 
                 $filename = 'expenses_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
                     $styleArray = array(
                         'borders' => array(
                             'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                             )
                         )
                     );
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
                     require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
+                    $rendererName = \PhpOffice\PhpSpreadsheet\Settings::PDF_RENDERER_MPDF;
                     $rendererLibrary = 'MPDF';
                     $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
+                    if (!\PhpOffice\PhpSpreadsheet\Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
                         die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
                             PHP_EOL . ' as appropriate for your directory structure');
                     }
@@ -3076,7 +3075,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'PDF');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -3087,7 +3086,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }
@@ -3341,32 +3340,30 @@ class Reports extends MY_Controller
                 $this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(40);
                 $this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(30);
                 $filename = 'adjustments_report';
-                $this->excel->getDefaultStyle()->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                $this->excel->getDefaultStyle()->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 if ($pdf) {
-                    $styleArray = array(
-                        'borders' => array(
-                            'allborders' => array(
-                                'style' => PHPExcel_Style_Border::BORDER_THIN
-                            )
-                        )
-                    );
+                   $styleArray = [
+                        'borders' => [
+                            'allBorders' => [
+                                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                            ]
+                        ]
+                    ];
                     $this->excel->getDefaultStyle()->applyFromArray($styleArray);
-                    $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-                    require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                    $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
-                    $rendererLibrary = 'MPDF';
-                    $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                    if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
-                        die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
-                            PHP_EOL . ' as appropriate for your directory structure');
-                    }
+                    $this->excel->getActiveSheet()->getPageSetup()
+                        ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+
+                    // Langsung pake Mpdf writer (harus install composer require mpdf/mpdf)
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter(
+                        $this->excel->getSpreadsheet(),
+                        'Mpdf'
+                    );
 
                     header('Content-Type: application/pdf');
                     header('Content-Disposition: attachment;filename="' . $filename . '.pdf"');
                     header('Cache-Control: max-age=0');
 
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'PDF');
-                    $objWriter->save('php://output');
+                    $writer->save('php://output');
                     exit();
                 }
                 if ($xls) {
@@ -3377,7 +3374,7 @@ class Reports extends MY_Controller
                     header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
                     header('Cache-Control: max-age=0');
                     ob_clean();
-                    $objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+                    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->excel, 'Excel5');
                     $objWriter->save('php://output');
                     exit();
                 }

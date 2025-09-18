@@ -1042,10 +1042,10 @@ class Transfers extends MY_Controller
                         $this->excel->getDefaultStyle()->applyFromArray($styleArray);
                         $this->excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
                         require_once(APPPATH . "third_party" . DIRECTORY_SEPARATOR . "MPDF" . DIRECTORY_SEPARATOR . "mpdf.php");
-                        $rendererName = PHPExcel_Settings::PDF_RENDERER_MPDF;
+                        $rendererName = \PhpOffice\PhpSpreadsheet\Settings::PDF_RENDERER_MPDF;
                         $rendererLibrary = 'MPDF';
                         $rendererLibraryPath = APPPATH . 'third_party' . DIRECTORY_SEPARATOR . $rendererLibrary;
-                        if (!PHPExcel_Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
+                        if (!\PhpOffice\PhpSpreadsheet\Settings::setPdfRenderer($rendererName, $rendererLibraryPath)) {
                             die('Please set the $rendererName: ' . $rendererName . ' and $rendererLibraryPath: ' . $rendererLibraryPath . ' values' .
                                 PHP_EOL . ' as appropriate for your directory structure');
                         }

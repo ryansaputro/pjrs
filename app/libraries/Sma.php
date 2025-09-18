@@ -366,7 +366,16 @@ class Sma
             $margin_top = 20;
         }
         $this->load->library('pdf');
-        $pdf = new mPDF('utf-8', 'A4-' . $orientation, '13', '', 10, 10, $margin_top, $margin_bottom, 9, 9);
+        $pdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-' . $orientation,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => $margin_top,
+            'margin_bottom' => $margin_bottom,
+            'margin_header' => 9,
+            'margin_footer' => 9,
+        ]);
         $pdf->debug = false;
         $pdf->autoScriptToLang = true;
         $pdf->autoLangToFont = true;

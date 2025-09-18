@@ -1,22 +1,20 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-/* 
- *  ============================================================================== 
- *  Author	: Mian Saleem
- *  Email	: saleem@tecdiary.com 
- *  For		: PHPExcel
- *  Web		: https://mpdf1.com
- *  License	: GPL
- *		: http://www.opensource.org/licenses/gpl-license.php
- *  ============================================================================== 
- */
-require_once APPPATH . "/third_party/mpdf-8.1.0/vendor/autoload.php";
 
-class Pdf extends mPDF
+use Mpdf\Mpdf;
+
+class Pdf
 {
-    public function __construct()
+    public $mpdf;
+
+    public function __construct($params = [])
     {
-        parent::__construct();
+        require_once FCPATH.'vendor/autoload.php';
+        $this->mpdf = new Mpdf($params);
+    }
+
+    public function load($html, $filename = 'document.pdf', $output = 'I')
+    {
+        $this->mpdf->WriteHTML($html);
+        return $this->mpdf->Output($filename, $output);
     }
 }
-// load autoload dari mPDF
-
