@@ -1,0 +1,45 @@
+# CodeIgniter system files
+/system/*
+!/system/index.php
+!/system/core
+!/system/database
+
+# App cache & logs
+/app/cache/*
+/app/logs/*
+/app/logs/*/*
+!/app/logs/index.html
+
+# Config sensitive
+/app/config/database.php
+/app/config/config.php
+
+# Vendor (Composer)
+vendor/
+
+# Composer lock file (optional, kalau gak mau lock dependencies)
+composer.lock
+
+# Environment files
+.env
+*.env
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Backup / archive files
+*.zip
+*.tar.gz
+*.bak
+*.tmp
+
+# Uploads (jika ada folder upload user yang gak mau masuk git)
+uploads/
