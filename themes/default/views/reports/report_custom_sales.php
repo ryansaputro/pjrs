@@ -1,8 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
     $(".filter-date").text("Periode " + $('#minDate').val() + " - " + $('#maxDate').val());
+
+    var selectedWarehouseId = ""; // default: semua gudang
 
     var oTable = $('#PQData').dataTable({
         "aaSorting": [[3, "desc"]],
@@ -10,7 +12,7 @@
         "iDisplayLength": <?= $Settings->rows_per_page ?>,
         'bProcessing': true, 
         'bServerSide': true,
-        'sAjaxSource': '<?= site_url('reports/getProductSales' . ($warehouse_id ? '/' . $warehouse_id : '')) ?>',
+        'sAjaxSource': '<?= site_url('reports/getProductSales') ?>',
         'fnServerData': function (sSource, aoData, fnCallback) {
             // Push CSRF
             aoData.push({
@@ -21,6 +23,11 @@
             // Push date filter
             aoData.push({ "name": "start_date", "value": $('#minDate').val() });
             aoData.push({ "name": "end_date", "value": $('#maxDate').val() });
+
+            // Push warehouse filter
+            if (selectedWarehouseId) {
+                aoData.push({ "name": "warehouse_id", "value": selectedWarehouseId });
+            }
 
             $.ajax({
                 'dataType': 'json', 
@@ -33,34 +40,41 @@
         "aoColumns": [
             { "mData": "product_code" }, 
             { "mData": "product_name" }, 
-            { "mData": "total", "mRender": formatQuantity }, 
-            // { "mData": "date" }
+            { "mData": "total", "mRender": formatQuantity }
         ],
     })
     .fnSetFilteringDelay()
     .dtFilter([
         {
-            column_number: 0, // index pertama = product_code
+            column_number: 0,
             filter_default_label: "[<?= lang('product_code'); ?>]", 
             filter_type: "text"
         },
         {
-            column_number: 1, // product_name
+            column_number: 1,
             filter_default_label: "[<?= lang('product_name'); ?>]", 
             filter_type: "text"
         },
         {
-            column_number: 2, // total
+            column_number: 2,
             filter_default_label: "[<?= lang('total'); ?>]", 
             filter_type: "text"
         },
-    ], "footer")
+    ], "footer");
 
+    // Ganti gudang via dropdown
+    $(document).on('click', '.warehouse-filter', function (e) {
+        e.preventDefault();
+        selectedWarehouseId = $(this).data('id'); // ambil dari data-id
+        oTable.fnDraw(); // reload datatable
+    });
+
+    // Filter tanggal
     $('#filter').click(function() {
         $(".filter-date").text("Periode " + $('#minDate').val() + " - " + $('#maxDate').val());
         $('#dateFilterModal').modal('hide');
         oTable.fnDraw();
-    })
+    });
 });
 </script>
 
@@ -84,16 +98,18 @@
                         </a>
                         <ul class="dropdown-menu pull-right tasks-menus" role="menu" aria-labelledby="dLabel">
                             <li>
-                                <a href="<?= site_url('reports/quantity_alerts') ?>">
+                                <a href="#" class="warehouse-filter" data-id="">
                                     <i class="fa fa-building-o"></i> <?= lang('all_warehouses') ?>
                                 </a>
                             </li>
                             <li class="divider"></li>
-                            <?php
-                            foreach ($warehouses as $warehouse) {
-                                echo '<li ' . ($warehouse_id && $warehouse_id == $warehouse->id ? 'class="active"' : '') . '><a href="' . site_url('reports/quantity_alerts/' . $warehouse->id) . '"><i class="fa fa-building"></i>' . $warehouse->name . '</a></li>';
-                            }
-                            ?>
+                            <?php foreach ($warehouses as $warehouse): ?>
+                                <li>
+                                    <a href="#" class="warehouse-filter" data-id="<?= $warehouse->id ?>">
+                                        <i class="fa fa-building"></i> <?= $warehouse->name ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
                         </ul>
                     </li>
                 <?php } ?>
@@ -206,21 +222,10 @@
                 + "&end_date=" + encodeURIComponent(end) 
                 + (warehouse ? "&warehouse_id=" + encodeURIComponent(warehouse) : '')); 
         });
-        // $('#image').click(function (event) {
-        //     event.preventDefault();
-        //     html2canvas($('.box'), {
-        //         onrendered: function (canvas) {
-        //             var img = canvas.toDataURL()
-        //             window.open(img);
-        //         }
-        //     });
-        //     return false;
-        // });
     });
 
     function openAndDownload(url) {
         var win = window.open(url, '_blank'); // buka tab baru
-        // coba auto-close setelah 3 detik (cukup aman buat file udah terdownload)
         var timer = setInterval(function() {
             if (win.closed) {
                 clearInterval(timer);

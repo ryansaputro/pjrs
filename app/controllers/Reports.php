@@ -3648,7 +3648,7 @@ class Reports extends MY_Controller
             // Mulai HTML
             $html = "<style>$css</style>";
             $html .= "<h2 style='text-align:center;'>Laporan Produk Terjual</h2>";
-            $html .= "<p>Periode: {$start_date} s/d {$end_date}</p>";
+            $html .= "<p style='text-align:center;'>Periode: {$start_date} s/d {$end_date}</p>";
 
             $html .= '<table>
                         <thead>

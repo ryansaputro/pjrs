@@ -14,6 +14,8 @@
 /app/config/database.php
 /app/config/config.php
 
+/app/third_party/stripe/*
+
 # Vendor (Composer)
 vendor/
 
